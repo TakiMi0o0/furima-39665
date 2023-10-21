@@ -1,8 +1,7 @@
 class ItemsController < ApplicationController
-  before_action :move_to_index, except: [:index]
 
   def index
-    @items = Item.find
+    @items = Item.all
   end
 
   def new
@@ -10,8 +9,12 @@ class ItemsController < ApplicationController
   end
 
   def create
-    Item.create(item_params)
-    redirect_to '/'
+    @item = Item.create(item_params)
+    if @item.save
+      redirect_to root_path
+    else
+      render :new, status: :unprocessable_entity
+    end
   end
 
 
@@ -20,10 +23,5 @@ class ItemsController < ApplicationController
     params.require(:item).permit(:image, :user, :item_name, :price, :description, :category_id, :item_status_id, :shipping_fee_id, :prefecture_id, :shipping_date_id).merge(user_id: current_user.id)
   end
 
-  def move_to_index
-    unless user_signed_in?
-      redirect_to action: :index
-    end
-  end
   
 end
