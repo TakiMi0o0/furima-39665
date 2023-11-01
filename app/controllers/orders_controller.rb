@@ -1,15 +1,15 @@
 class OrdersController < ApplicationController
   before_action :authenticate_user!
+  before_action :move_to_top
 
   def index
-    gon.public_key = ENV["PAYJP_PUBLIC_KEY"]
     @item = Item.find(params[:item_id])
     @order_ship = OrderShip.new
+    gon.public_key = ENV["PAYJP_PUBLIC_KEY"]
   end
 
   def new
     @order_ship = OrderShip.new
-    gon.public_key = ENV["PAYJP_PUBLIC_KEY"]
   end
 
   def create
@@ -40,6 +40,13 @@ class OrdersController < ApplicationController
       card: order_params[:token],
       currency: 'jpy'
     )
+  end
+
+  def move_to_top
+    @item = Item.find(params[:item_id])
+    if @item.orders.present? || current_user.id == @item.user_id
+      redirect_to root_path
+    end
   end
 
 end
