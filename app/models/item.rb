@@ -8,7 +8,7 @@ class Item < ApplicationRecord
   belongs_to :shipping_date
   has_one_attached :image
   
-  has_many :orders
+  has_one :order
 
   validates :image, :item_name, :price, :description, :category_id, :item_status_id, :shipping_fee_id, :prefecture_id, :shipping_date_id, presence: true
   validates :category_id, :item_status_id, :shipping_fee_id, :prefecture_id, :shipping_date_id, numericality: { other_than: 0 } 

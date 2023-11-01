@@ -52,7 +52,7 @@ class ItemsController < ApplicationController
   end
 
   def move_to_index
-    if @item.orders.present? || current_user.id != @item.user_id
+    if @item.order.present? || current_user.id != @item.user_id
       redirect_to action: :index
     end
   end

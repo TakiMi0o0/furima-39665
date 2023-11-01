@@ -1,20 +1,15 @@
 class OrdersController < ApplicationController
   before_action :authenticate_user!
   before_action :move_to_top
+  before_action :set_item, only: [:index, :create]
 
   def index
-    @item = Item.find(params[:item_id])
     @order_ship = OrderShip.new
     gon.public_key = ENV["PAYJP_PUBLIC_KEY"]
   end
 
-  def new
-    @order_ship = OrderShip.new
-  end
-
   def create
     @order_ship = OrderShip.new(order_params)
-    @item = Item.find(params[:item_id])
     gon.public_key = ENV["PAYJP_PUBLIC_KEY"]
     if @order_ship.valid?
       pay_item
@@ -26,6 +21,10 @@ class OrdersController < ApplicationController
   end
 
   private
+
+  def set_item
+    @item = Item.find(params[:item_id])
+  end
 
   def order_params
     params.require(:order_ship)
@@ -44,7 +43,7 @@ class OrdersController < ApplicationController
 
   def move_to_top
     @item = Item.find(params[:item_id])
-    if @item.orders.present? || current_user.id == @item.user_id
+    if @item.order.present? || current_user.id == @item.user_id
       redirect_to root_path
     end
   end
