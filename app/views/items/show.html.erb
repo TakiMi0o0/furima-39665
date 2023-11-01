@@ -23,12 +23,12 @@
       </span>
     </div>
 
-    <% unless @item.order.present? %>
-      <% if user_signed_in? && current_user == @item.user %>
+    <% if user_signed_in? && @item.order == nil %>
+      <% if current_user == @item.user %>
         <%= link_to "商品の編集", edit_item_path(@item.id), method: :get, class: "item-red-btn" %>
         <p class="or-text">or</p>
         <%= link_to "削除", item_path(@item.id), data: { turbo_method: :delete }, method: :delete, class:"item-destroy" %>
-      <% elsif user_signed_in? && current_user != @item.user %>
+      <% else %>
         <%= link_to "購入画面に進む", item_orders_path(@item.id), data: {"turbolinks" => false}, class:"item-red-btn"%>
       <% end %>
     <% end %>
